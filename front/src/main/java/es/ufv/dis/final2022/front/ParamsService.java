@@ -1,10 +1,13 @@
 package es.ufv.dis.final2022.front;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-
+import java.util.Collection;
+import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Service;
@@ -12,16 +15,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParamsService implements Serializable{
 
-    public String leePokemonPorNombre(String nombre) throws URISyntaxException, IOException,
+    public Pokemon leePokemonPorNombre(String nombre) throws URISyntaxException, IOException,
             InterruptedException {
         API api = new API();
-        return api.getPokemonPorNombre(nombre);
+        String pokemonJson = api.getPokemonPorNombre(nombre);
+        Gson gson = new Gson();
+        return gson.fromJson(pokemonJson, Pokemon.class);
     }
-    public String leePokemonPorTipo(String tipo) throws URISyntaxException, IOException,
+
+
+    public List<Pokemon> leePokemonPorTipo(String tipo) throws URISyntaxException, IOException,
             InterruptedException {
         API api = new API();
-        return api.getPokemonPorTipo(tipo);
+        String pokemonsJson = api.getPokemonPorTipo(tipo);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Pokemon>>() {}.getType();
+        return gson.fromJson(pokemonsJson, listType);
     }
+
+
     public ArrayList<Pokemon> leePokemons() throws URISyntaxException, IOException,
             InterruptedException {
         API api = new API();

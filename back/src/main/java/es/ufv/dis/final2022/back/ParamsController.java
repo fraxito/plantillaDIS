@@ -25,6 +25,9 @@ public class ParamsController {
         User foundUser = dataHandling.getUserInfo(name);
         return new ResponseEntity<>(foundUser, HttpStatus.OK);
     }
+    
+    
+    
 
     @GetMapping("/Pokemons")
     public ArrayList<Pokemon> getPokemons(){
@@ -32,12 +35,43 @@ public class ParamsController {
         return listaPokemons;
     }
 
-    @GetMapping("/Pokemons/{name}")
-    public ResponseEntity<Pokemon> getPokemonByName(@PathVariable String name){
-        DataHandling dataHandling = new DataHandling();
-        Pokemon foundPokemon = dataHandling.getPokemonInfo(name);
-        return new ResponseEntity<>(foundPokemon, HttpStatus.OK);
+    @GetMapping("/Pokemons/porNombre/{nombre}")
+    public ResponseEntity<Pokemon> getPokemonPorNombre(@PathVariable String nombre){
+        ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2();
+        //ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2("./src/main/resources/pokemonConId.json");
+
+        Pokemon encontrado = null;
+        for (Pokemon pokemon : listaPokemons) {
+            if(pokemon.getName().equalsIgnoreCase(nombre)){
+                encontrado = pokemon;
+            }
+        }
+        return new ResponseEntity<>(encontrado, HttpStatus.OK);
     }
+
+
+    @GetMapping("/Pokemons/porTipo/{tipo}")
+    public ArrayList<Pokemon> getPokemonPorTipo(@PathVariable String tipo){
+        ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2();
+        //ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2("./src/main/resources/pokemonConId.json");
+
+        ArrayList<Pokemon> listaEncontrados = new ArrayList<>();
+        for (Pokemon pokemon : listaPokemons) {
+            if(pokemon.getTipo1().equalsIgnoreCase(tipo) || pokemon.getTipo2().equalsIgnoreCase(tipo)){
+                listaEncontrados.add(pokemon);
+            }
+        }
+        return listaEncontrados;
+    }
+
+    ///////// GET POR NOMBRE CUANDO TODAVIA NO TIENES EL FRONT HECHO /////////////////
+
+//    @GetMapping("/Pokemons/{name}")
+//    public ResponseEntity<Pokemon> getPokemonByName(@PathVariable String name){
+//        DataHandling dataHandling = new DataHandling();
+//        Pokemon foundPokemon = dataHandling.getPokemonInfo(name);
+//        return new ResponseEntity<>(foundPokemon, HttpStatus.OK);
+//    }
 
 
     ////////////////////////////////   POST  //////////////////////////////
