@@ -12,19 +12,6 @@ public class ParamsController {
 
     ////////////////////////////////   GET  //////////////////////////////
 
-    @GetMapping("/Pokemons")
-    public ArrayList<Pokemon> getPokemons(){
-        ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2();
-        return listaPokemons;
-    }
-
-    @GetMapping("/Pokemons/{name}")
-    public ResponseEntity<Pokemon> getPokemonByName(@PathVariable String name){
-        DataHandling dataHandling = new DataHandling();
-        Pokemon foundPokemon = dataHandling.getPokemonInfo(name);
-        return new ResponseEntity<>(foundPokemon, HttpStatus.OK);
-    }
-
 
     @GetMapping("/users")
     public ArrayList<User> getUsers(){
@@ -39,8 +26,22 @@ public class ParamsController {
         return new ResponseEntity<>(foundUser, HttpStatus.OK);
     }
 
+    @GetMapping("/Pokemons")
+    public ArrayList<Pokemon> getPokemons(){
+        ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2();
+        return listaPokemons;
+    }
+
+    @GetMapping("/Pokemons/{name}")
+    public ResponseEntity<Pokemon> getPokemonByName(@PathVariable String name){
+        DataHandling dataHandling = new DataHandling();
+        Pokemon foundPokemon = dataHandling.getPokemonInfo(name);
+        return new ResponseEntity<>(foundPokemon, HttpStatus.OK);
+    }
+
 
     ////////////////////////////////   POST  //////////////////////////////
+
 
     @PostMapping(path = "users",
             consumes = MediaType.APPLICATION_JSON_VALUE,
