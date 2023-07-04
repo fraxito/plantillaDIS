@@ -3,7 +3,6 @@ package es.ufv.dis.final2022.front;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -56,6 +55,15 @@ public class MainView extends VerticalLayout {
      * Clase empleada para la creación de la vista principal de la aplicación.
      */
 
+    private final VerticalLayout content1;
+    private final Tab userTab;
+    private final Tab rolTab;
+    private final Tab nombreTab1;
+
+    Grid<User> grid1;
+    VerticalLayout inputsTipoV1;
+    VerticalLayout inputsNombreV1;
+
 
     private final VerticalLayout content;
     private final Tab pokemonTab;
@@ -65,7 +73,11 @@ public class MainView extends VerticalLayout {
     Grid<Pokemon> grid;
     VerticalLayout inputsTipoV;
     VerticalLayout inputsNombreV;
+
+
+
     public MainView(@Autowired ParamsService service) {
+
 
         VerticalLayout layout = new VerticalLayout();
         inputsTipoV = new VerticalLayout();
@@ -74,11 +86,6 @@ public class MainView extends VerticalLayout {
         HorizontalLayout inputsNombre = new HorizontalLayout();
         VerticalLayout titulos = new VerticalLayout();
         content = new VerticalLayout();
-
-        //layout.setWidth("100%");
-        //inputsNombre.setWidth("100%");
-        //inputsTipo.setWidth("100%");
-        //titulos.setWidth("100%");
 
 
         H1 titulo = new H1("Pokedex");
@@ -141,6 +148,7 @@ public class MainView extends VerticalLayout {
         Button botonNombre = new Button("Buscar", e -> {
             String dato = datosNombre.getValue();
             try{
+                listaPokemonsNombre.clear(); // Limpiar la lista antes de agregar los resultados del filtro
                 listaPokemonsNombre.add(service.leePokemonPorNombre(dato));
                 gridNombre.setItems(listaPokemonsNombre);
             } catch (Exception ex) {
@@ -172,6 +180,114 @@ public class MainView extends VerticalLayout {
 
         layout.add(titulos, tabSheet, content);
         add(layout);
+
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        VerticalLayout layout1 = new VerticalLayout();
+        inputsTipoV1 = new VerticalLayout();
+        inputsNombreV1 = new VerticalLayout();
+        HorizontalLayout inputsRol = new HorizontalLayout();
+        HorizontalLayout inputsNombre1 = new HorizontalLayout();
+        VerticalLayout titulos1 = new VerticalLayout();
+        content1 = new VerticalLayout();
+
+
+        H1 titulo1 = new H1("Usuarios");
+        H2 subtitulo1 = new H2("Seleccione una pestaña para ver todos los usuarios, buscar por nombre o por rol");
+        titulo1.getStyle().set("align-self", "center").set("margin", "10px");
+        subtitulo1.getStyle().set("align-self", "center").set("margin","2px");
+        titulos1.add(titulo1, subtitulo1);
+
+        ArrayList<User> listaUsersNombre = new ArrayList<User>();
+
+
+        grid1 = new Grid<>(User.class, false);
+        grid1.addColumn(User::getName).setHeader("Nombre").setSortable(true);
+        grid1.addColumn(User::getEmail).setHeader("Email").setSortable(true);
+        grid1.addColumn(user -> String.join(", ", user.getRoles())).setHeader("Roles").setSortable(true);
+        grid1.addColumn(User::isAdmin).setHeader("Admin").setSortable(true);
+        grid1.getStyle().set("margin", "10px");
+        grid1.setHeight("700px");
+
+        Grid<User> gridRol = new Grid<>(User.class, false);
+        gridRol.addColumn(User::getName).setHeader("Nombre").setSortable(true);
+        gridRol.addColumn(User::getEmail).setHeader("Email").setSortable(true);
+        gridRol.addColumn(user -> String.join(", ", user.getRoles())).setHeader("Roles").setSortable(true);
+        gridRol.addColumn(User::isAdmin).setHeader("Admin").setSortable(true);
+        gridRol.getStyle().set("margin", "10px");
+        gridRol.setHeight("700px");
+
+        Grid<User> gridNombre1 = new Grid<>(User.class, false);
+        gridNombre1.addColumn(User::getName).setHeader("Nombre").setSortable(true);
+        gridNombre1.addColumn(User::getEmail).setHeader("Email").setSortable(true);
+        gridNombre1.addColumn(user -> String.join(", ", user.getRoles())).setHeader("Roles").setSortable(true);
+        gridNombre1.addColumn(User::isAdmin).setHeader("Admin").setSortable(true);
+        gridRol.getStyle().set("margin", "10px");
+        gridRol.setHeight("700px");
+
+        try{
+            grid1.setItems(service.leeUsers());
+
+        } catch (Exception ex) {
+            Notification.show("Error al leer el usuario");
+        }
+
+
+        TextField datosRol = new TextField("Introduce el Rol");
+        Button botonRol = new Button("Buscar", e -> {
+            String dato = datosRol.getValue();
+            try{
+                gridRol.setItems(service.leeUserPorRol(dato));
+            } catch (Exception ex) {
+                Notification.show("Error al leer el rol del usuario");
+            }
+        });
+        botonRol.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        botonRol.addClickShortcut(Key.ENTER);
+        //addClassName("centered-content");
+
+        TextField datosNombre1 = new TextField("Introduce el Nombre");
+        Button botonNombre1 = new Button("Buscar", e -> {
+            String dato = datosNombre1.getValue();
+            try{
+                listaUsersNombre.clear(); // Limpiar la lista antes de agregar los resultados del filtro
+                listaUsersNombre.add(service.leeUserPorNombre(dato));
+                gridNombre1.setItems(listaUsersNombre);
+            } catch (Exception ex) {
+                Notification.show("Error al leer el nombre del usuario");
+            }
+        });
+        botonNombre1.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        botonNombre1.addClickShortcut(Key.ENTER);
+        addClassName("stretch");
+
+        inputsRol.add(datosRol, botonRol);
+        inputsNombre1.add(datosNombre1, botonNombre1);
+        inputsTipoV1.add(inputsRol,gridRol);
+        inputsNombreV1.add(inputsNombre1,gridNombre1);
+
+
+        userTab = new Tab("General");
+        rolTab = new Tab("Buscar Por Rol");
+        nombreTab1 = new Tab("Buscar Por Nombre");
+        Tabs tabSheet1 = new Tabs(userTab, rolTab, nombreTab1);
+        userTab.getStyle().set("width", "34%");
+        rolTab.getStyle().set("width", "33%");
+        nombreTab1.getStyle().set("width", "33%");
+        tabSheet1.getStyle().set("width", "100%");
+        tabSheet1.addSelectedChangeListener(event ->
+                setContent1(event.getSelectedTab())
+        );
+        setContent1(tabSheet1.getSelectedTab());
+
+        layout1.add(titulos1, tabSheet1, content1);
+        add(layout1);
     }
 
     private void setContent(Tab tab) {
@@ -185,6 +301,20 @@ public class MainView extends VerticalLayout {
             content.add(inputsNombreV);
         } else {
             content.add(new Paragraph("Seleccione una Pestaña."));
+        }
+    }
+
+    private void setContent1(Tab tab) {
+        content1.removeAll();
+
+        if (tab.equals(userTab)) {
+            content1.add(grid1);
+        } else if (tab.equals(rolTab)) {
+            content1.add(inputsTipoV1);
+        } else if (tab.equals(nombreTab1)){
+            content1.add(inputsNombreV1);
+        } else {
+            content1.add(new Paragraph("Seleccione una Pestaña."));
         }
     }
 

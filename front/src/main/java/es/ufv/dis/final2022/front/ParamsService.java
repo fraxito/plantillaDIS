@@ -15,6 +15,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParamsService implements Serializable{
 
+    ////////////  POKEMONS  ///////////////
+
+    public ArrayList<Pokemon> leePokemons() throws URISyntaxException, IOException,
+            InterruptedException {
+        API api = new API();
+        String resultsAPI = api.getPokemons();
+        Gson gson = new Gson();
+        ArrayList<Pokemon> lista = gson.fromJson(resultsAPI,new
+                TypeToken<ArrayList<Pokemon>>(){}.getType());
+        return lista;
+    }
+
     public Pokemon leePokemonPorNombre(String nombre) throws URISyntaxException, IOException,
             InterruptedException {
         API api = new API();
@@ -33,15 +45,33 @@ public class ParamsService implements Serializable{
         return gson.fromJson(pokemonsJson, listType);
     }
 
+    ////////////  USUARIOS  ///////////////
 
-    public ArrayList<Pokemon> leePokemons() throws URISyntaxException, IOException,
+    public ArrayList<User> leeUsers() throws URISyntaxException, IOException,
             InterruptedException {
         API api = new API();
-        String resultsAPI = api.getPokemons();
+        String resultsAPI = api.getUsers();
         Gson gson = new Gson();
-        ArrayList<Pokemon> lista = gson.fromJson(resultsAPI,new
-                TypeToken<ArrayList<Pokemon>>(){}.getType());
+        ArrayList<User> lista = gson.fromJson(resultsAPI,new TypeToken<ArrayList<User>>(){}.getType());
         return lista;
+    }
+
+    public User leeUserPorNombre(String nombre) throws URISyntaxException, IOException, InterruptedException {
+        API api = new API();
+        String userJson = api.getUserPorNombre(nombre);
+        Gson gson = new Gson();
+        return gson.fromJson(userJson, User.class);
+    }
+
+    ///// SI TIENES UN [] CON VARIOS STRINGS ENTONCES UTILIZA ESTE ///////
+
+    public List<User> leeUserPorRol(String rol) throws URISyntaxException, IOException,
+            InterruptedException {
+        API api = new API();
+        String userJson = api.getUserPorRol(rol);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<User>>() {}.getType();
+        return gson.fromJson(userJson, listType);
     }
 
 }

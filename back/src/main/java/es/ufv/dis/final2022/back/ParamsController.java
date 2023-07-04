@@ -5,6 +5,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
+import java.awt.*;
 import java.util.ArrayList;
 
 @RestController
@@ -12,23 +15,52 @@ public class ParamsController {
 
     ////////////////////////////////   GET  //////////////////////////////
 
-
-    @GetMapping("/users")
+    ////////////  USUARIOS  ///////////////
+    @GetMapping("/Users")
     public ArrayList<User> getUsers(){
         ArrayList<User> listaUsuarios = new JsonReader().leeFicheroJson();
         return listaUsuarios;
     }
 
-    @GetMapping("/users/{name}")
-    public ResponseEntity<User> getUserByName(@PathVariable String name){
-        DataHandling dataHandling = new DataHandling();
-        User foundUser = dataHandling.getUserInfo(name);
-        return new ResponseEntity<>(foundUser, HttpStatus.OK);
-    }
-    
-    
-    
 
+    @GetMapping("/Users/porNombre/{nombre}")
+    public ResponseEntity<User> getUserPorNombre(@PathVariable String nombre){
+        ArrayList<User> listaUsuarios = new JsonReader().leeFicheroJson();
+        //ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2("./src/main/resources/pokemonConId.json");
+
+        User encontrado = null;
+        for (User user : listaUsuarios) {
+            if(user.getName().equalsIgnoreCase(nombre)){
+                encontrado = user;
+            }
+        }
+        return new ResponseEntity<>(encontrado, HttpStatus.OK);
+    }
+
+    @GetMapping("/Users/porRol/{rol}")
+    public List<User> getUserPorRol(@PathVariable String rol) {
+        List<User> listaUsuarios = new JsonReader().leeFicheroJson();
+        List<User> usuariosEncontrados = new ArrayList<>();
+
+        for (User user : listaUsuarios) {
+            if (Arrays.asList(user.getRoles()).contains(rol)) {
+                usuariosEncontrados.add(user);
+            }
+        }
+
+        return usuariosEncontrados;
+    }
+
+
+//    @GetMapping("/users/{name}")
+//    public ResponseEntity<User> getUserByName(@PathVariable String name){
+//        DataHandling dataHandling = new DataHandling();
+//        User foundUser = dataHandling.getUserInfo(name);
+//        return new ResponseEntity<>(foundUser, HttpStatus.OK);
+//    }
+
+
+    ////////////  POKEMONS  ///////////////
     @GetMapping("/Pokemons")
     public ArrayList<Pokemon> getPokemons(){
         ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2();

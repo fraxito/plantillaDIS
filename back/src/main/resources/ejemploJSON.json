@@ -1,6 +1,6 @@
 [
   {
-    "name": "John Connor",
+    "name": "JohnConnor",
     "email": "john.connor@example.com",
     "roles": [
       "Member",
@@ -9,7 +9,7 @@
     "admin": true
   },
   {
-    "name": "Tom Lee",
+    "name": "TomLee",
     "email": "tom.lee@example.com",
     "roles": [
       "Member"
@@ -17,7 +17,7 @@
     "admin": false
   },
   {
-    "name": "Roy Fielding",
+    "name": "RoyFielding",
     "email": "roy.fielding@legend.com",
     "roles": [
       "Member",
