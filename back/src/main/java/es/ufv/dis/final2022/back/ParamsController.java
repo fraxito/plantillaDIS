@@ -96,6 +96,21 @@ public class ParamsController {
         return listaEncontrados;
     }
 
+    /////////////////////    SI QUIERES UNO QUE VAYA POR INT UTILIZA ESTE  /////////////////////
+
+    @GetMapping("/Pokemons/porAtk/{atk}")
+    public ArrayList<Pokemon> getPokemonPorAtk(@PathVariable String atk){
+        ArrayList<Pokemon> listaPokemons = new JsonReader().leeFicheroJson2();
+
+        ArrayList<Pokemon> listaEncontrados = new ArrayList<>();
+        for (Pokemon pokemon : listaPokemons) {
+            if (pokemon.getAttack() == Integer.parseInt(atk)) {
+                listaEncontrados.add(pokemon);
+            }
+        }
+        return listaEncontrados;
+    }
+
     ///////// GET POR NOMBRE CUANDO TODAVIA NO TIENES EL FRONT HECHO /////////////////
 
 //    @GetMapping("/Pokemons/{name}")

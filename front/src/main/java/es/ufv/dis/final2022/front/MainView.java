@@ -20,6 +20,7 @@ import com.vaadin.flow.server.PWA;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A sample Vaadin view class.
@@ -69,10 +70,12 @@ public class MainView extends VerticalLayout {
     private final Tab pokemonTab;
     private final Tab tipoTab;
     private final Tab nombreTab;
+    private final Tab atkTab;
 
     Grid<Pokemon> grid;
     VerticalLayout inputsTipoV;
     VerticalLayout inputsNombreV;
+    VerticalLayout inputsAtkV;
 
 
 
@@ -82,8 +85,10 @@ public class MainView extends VerticalLayout {
         VerticalLayout layout = new VerticalLayout();
         inputsTipoV = new VerticalLayout();
         inputsNombreV = new VerticalLayout();
+        inputsAtkV = new VerticalLayout();
         HorizontalLayout inputsTipo = new HorizontalLayout();
         HorizontalLayout inputsNombre = new HorizontalLayout();
+        HorizontalLayout inputsAtk = new HorizontalLayout();
         VerticalLayout titulos = new VerticalLayout();
         content = new VerticalLayout();
 
@@ -121,8 +126,17 @@ public class MainView extends VerticalLayout {
         gridNombre.addColumn(Pokemon::getDefense).setHeader("Defensa").setSortable(true);
         gridNombre.addColumn(Pokemon::getTipo1).setHeader("Tipo 1").setSortable(true);
         gridNombre.addColumn(Pokemon::getTipo2).setHeader("Tipo 2").setSortable(true);
-        gridTipo.getStyle().set("margin", "10px");
-        gridTipo.setHeight("700px");
+        gridNombre.getStyle().set("margin", "10px");
+        gridNombre.setHeight("700px");
+
+        Grid<Pokemon> gridAtk = new Grid<>(Pokemon.class, false);
+        gridAtk.addColumn(Pokemon::getName).setHeader("Nombre").setSortable(true);
+        gridAtk.addColumn(Pokemon::getAttack).setHeader("Ataque").setSortable(true);
+        gridAtk.addColumn(Pokemon::getDefense).setHeader("Defensa").setSortable(true);
+        gridAtk.addColumn(Pokemon::getTipo1).setHeader("Tipo 1").setSortable(true);
+        gridAtk.addColumn(Pokemon::getTipo2).setHeader("Tipo 2").setSortable(true);
+        gridAtk.getStyle().set("margin", "10px");
+        gridAtk.setHeight("700px");
 
         try{
             grid.setItems(service.leePokemons());
@@ -159,19 +173,41 @@ public class MainView extends VerticalLayout {
         botonNombre.addClickShortcut(Key.ENTER);
         addClassName("stretch");
 
+        /////////////////////    SI QUIERES UNO QUE VAYA POR INT UTILIZA ESTE  /////////////////////
+
+        TextField datosAtk = new TextField("Introduce el Ataque");
+        Button botonAtk = new Button("Buscar", e -> {
+            String dato = datosAtk.getValue();
+            try {
+                listaPokemonsNombre.clear(); // Limpiar la lista antes de agregar los resultados del filtro
+                List<Pokemon> pokemonsEncontrados = service.leePokemonPorAtk(dato);
+                listaPokemonsNombre.addAll(pokemonsEncontrados);
+                gridAtk.setItems(listaPokemonsNombre);
+            } catch (Exception ex) {
+                ex.printStackTrace(); // Imprimir la pila de excepciones en la consola
+                Notification.show("Error al leer el ataque del pokemon: " + ex.getMessage());
+            }
+        });
+        botonAtk.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        botonAtk.addClickShortcut(Key.ENTER);
+
         inputsTipo.add(datosTipo, botonTipo);
         inputsNombre.add(datosNombre, botonNombre);
+        inputsAtk.add(datosAtk, botonAtk);
         inputsTipoV.add(inputsTipo,gridTipo);
         inputsNombreV.add(inputsNombre,gridNombre);
+        inputsAtkV.add(inputsAtk,gridAtk);
 
 
         pokemonTab = new Tab("General");
         tipoTab = new Tab("Buscar Por Tipo");
         nombreTab = new Tab("Buscar Por Nombre");
-        Tabs tabSheet = new Tabs(pokemonTab, tipoTab, nombreTab);
+        atkTab = new Tab("Buscar Por Ataque");
+        Tabs tabSheet = new Tabs(pokemonTab, tipoTab, nombreTab, atkTab);
         pokemonTab.getStyle().set("width", "34%");
         tipoTab.getStyle().set("width", "33%");
         nombreTab.getStyle().set("width", "33%");
+        atkTab.getStyle().set("width", "33%");
         tabSheet.getStyle().set("width", "100%");
         tabSheet.addSelectedChangeListener(event ->
                 setContent(event.getSelectedTab())
@@ -299,6 +335,8 @@ public class MainView extends VerticalLayout {
             content.add(inputsTipoV);
         } else if (tab.equals(nombreTab)){
             content.add(inputsNombreV);
+        } else if (tab.equals(atkTab)) {
+            content.add(inputsAtkV);
         } else {
             content.add(new Paragraph("Seleccione una Pestaña."));
         }

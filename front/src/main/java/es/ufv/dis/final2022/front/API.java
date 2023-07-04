@@ -67,6 +67,23 @@ public class API {
         return response.body();
     }
 
+    /////////////////////    SI QUIERES UNO QUE VAYA POR INT UTILIZA ESTE  /////////////////////
+
+    public String getPokemonPorAtk(String atk) throws URISyntaxException, IOException,
+            InterruptedException {
+        String fullUrl = String.format(urlPrefix, "Pokemons/porAtk", atk);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(fullUrl))
+                .GET()
+                .build();
+        HttpResponse<String> response = HttpClient
+                .newBuilder()
+                .build()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+        return response.body();
+    }
+
 
     ////////////  USUARIOS  ///////////////
 

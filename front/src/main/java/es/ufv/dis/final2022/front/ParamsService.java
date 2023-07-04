@@ -45,6 +45,17 @@ public class ParamsService implements Serializable{
         return gson.fromJson(pokemonsJson, listType);
     }
 
+    /////////////////////    SI QUIERES UNO QUE VAYA POR INT UTILIZA ESTE  /////////////////////
+
+    public List<Pokemon> leePokemonPorAtk(String atk) throws URISyntaxException, IOException, InterruptedException {
+        API api = new API();
+        String pokemonJson = api.getPokemonPorAtk(atk);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<Pokemon>>() {}.getType();
+        return gson.fromJson(pokemonJson, listType);
+    }
+
+
     ////////////  USUARIOS  ///////////////
 
     public ArrayList<User> leeUsers() throws URISyntaxException, IOException,
